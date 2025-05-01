@@ -15,7 +15,7 @@ order by epikey
 
 
 
-
+-- this table doesn't exist anyway? Suspect this is to drop the table generated below in case it does exist
 drop table dbo.[SSI_cat_counts_hip_knee_06may_2021_ambig_cases_episodes]
 
 

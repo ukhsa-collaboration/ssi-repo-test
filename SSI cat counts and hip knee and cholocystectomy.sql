@@ -54,6 +54,7 @@ select pid.FYEAR
 --into SSI_cat_counts_21dec_2020
 --into dbo.SSI_cat_counts_06may_2021
 --into dbo.SSI_cat_counts_06dec_2022
+into dbo.ssi_cat_counts_2013_data_apr_2025
 from HES_PID_APC.dbo.vtHES_PID_APC pid inner join HES_APC.dbo.vtHES_APC p on
 pid.FYEAR = p.FYEAR
 and pid.EPIKEY = p.EPIKEY
@@ -61,7 +62,8 @@ inner join HES_APC.[dbo].[vtHES_APC_OPERTN] o on
 pid.FYEAR = o.FYEAR
 and pid.EPIKEY = o.EPIKEY
 --inner join  SSI_all_cats_opcodes_02072020 pf on
-inner join [dbo].[Pfizer_all_cats_opcodes_edited_16122020] pf on		-- 
+--inner join [dbo].[Pfizer_all_cats_opcodes_edited_16122020] pf on		-- 
+inner join [HES_PID_Analysis].[PHE\Simon.Thelwall].[st_pfizer_all_cats_opcodes] pf on	
 o.OPERTN = pf.CodeNoDot
 where  p.FYEAR = '1314'
 and o.OPERTN != '-'
@@ -76,7 +78,8 @@ and ADMIMETH in ('11','12','13')	-- Select elective only cases
 
 select CodeNodot
 into dbo.SSI_ambig_codes
-from Pfizer_all_cats_opcodes_edited_16122020		-- contains the OPCS codes and their various categories
+--from Pfizer_all_cats_opcodes_edited_16122020		-- contains the OPCS codes and their various categories
+from [HES_PID_Analysis].[PHE\Simon.Thelwall].[st_pfizer_all_cats_opcodes]
 group by CodeNoDot
 having count(*) > 1
 order by CodeNoDot
@@ -89,7 +92,9 @@ from SSI_ambig_codes
 
 select *
 --into dbo.SSI_cat_counts_hip_knee_06may_2021
-from dbo.SSI_cat_counts_06dec_2022
+-- from dbo.SSI_cat_counts_06dec_2022
+into dbo.SSI_cat_counts_hip_knee_apr_2025
+from dbo.ssi_cat_counts_2013_data_apr_2025
 where HESCategory in ('6', '7')
 
 -- 148,406 records
@@ -152,6 +157,9 @@ from SSI_cat_counts_ambig_cases
 )
 order by epikey
 
+
+-- three rows, same opdate. One distinct hip replacement code. 
+-- One code on two rows (hip row and a knee row) that could be either hip or knee 
 select *
 from SSI_cat_counts_hip_knee_06may_2021
 where EPIKEY = '501613400974'
