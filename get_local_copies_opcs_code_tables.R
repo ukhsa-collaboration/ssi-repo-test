@@ -3,10 +3,13 @@ library(DBI) # for working with databases
 
 setwd("C:/Users/simon.thelwall/r_stuff/ssi_r_stuff/SSI_sql_queries")
 
+lake19_path <- readLines("C:/Users/simon.thelwall/r_stuff/SSI_sql_queries/dbase_strings/datalake19_string.txt")
+lake19_path
+
 con <- odbc::dbConnect(
   odbc()
   , Driver = "SQL Server"
-  , Server = "SQLCLUSCOLLK19.phe.gov.uk\\LAKE19"
+  , Server = stringr::str_replace(lake19_path, "\\\\", "\\")
   , Database = "HES_PID_Analysis"
 )
 
